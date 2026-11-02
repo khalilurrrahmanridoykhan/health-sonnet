@@ -1,0 +1,22 @@
+{
+  "patientId": "P001",
+  "firstName": "আহমেদ",
+  "lastName": "হোসেইন",
+  "dob": "1985-04-12",
+  "visits": [
+    {
+      "date": "2024-01-10",
+      "weightKg": 78,
+      "heightCm": 170,
+      "bloodPressure": "130/85",
+      "diagnosis": "Hypertension"
+    },
+    {
+      "date": "2024-06-05",
+      "weightKg": 80,
+      "heightCm": 170,
+      "bloodPressure": "135/88",
+      "diagnosis": "Diabetes"
+    }
+  ]
+}
