@@ -1,0 +1,10 @@
+{
+  fullName: payload.firstName + " " + payload.lastName,
+  dateOfBirth: payload.dob,
+  visitSummaries: std.map(function(v) {
+    date: v.date,
+    bmi: std.round(v.weightKg / ((v.heightCm / 100) ^ 2)),
+    bp: v.bloodPressure,
+    diagnosis: v.diagnosis
+  }, payload.visits)
+}
