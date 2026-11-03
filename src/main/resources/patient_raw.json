@@ -1,22 +1,46 @@
-{
-  "patientId": "P001",
-  "firstName": "আহমেদ",
-  "lastName": "হোসেইন",
-  "dob": "1985-04-12",
-  "visits": [
-    {
-      "date": "2024-01-10",
-      "weightKg": 78,
-      "heightCm": 170,
-      "bloodPressure": "130/85",
-      "diagnosis": "Hypertension"
-    },
-    {
-      "date": "2024-06-05",
-      "weightKg": 80,
-      "heightCm": 170,
-      "bloodPressure": "135/88",
-      "diagnosis": "Diabetes"
-    }
-  ]
-}
+[
+  {
+    "trackedEntityInstance": "TEI-001",
+    "orgUnit": "OU-001",
+    "attributes": [
+      {
+        "attribute": "firstNameUID",
+        "value": "Ahmed"
+      },
+      {
+        "attribute": "surnameUID",
+        "value": "Hussein"
+      },
+      {
+        "attribute": "sexUID",
+        "value": "male"
+      },
+      {
+        "attribute": "dobUID",
+        "value": "1985-04-12"
+      }
+    ]
+  },
+  {
+    "trackedEntityInstance": "TEI-002",
+    "orgUnit": "OU-002",
+    "attributes": [
+      {
+        "attribute": "firstNameUID",
+        "value": "Khalilur Rahman"
+      },
+      {
+        "attribute": "surnameUID",
+        "value": "Ridoy Khan"
+      },
+      {
+        "attribute": "sexUID",
+        "value": "male"
+      },
+      {
+        "attribute": "dobUID",
+        "value": "2003-01-03"
+      }
+    ]
+  }
+]

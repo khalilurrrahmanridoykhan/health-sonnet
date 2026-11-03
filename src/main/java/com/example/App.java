@@ -1,13 +1,17 @@
 package com.example;
 
-/**
- * Hello world!
- *
- */
-public class App 
+import java.nio.file.Files;
+import java.nio.file.Paths;
+
+public class App
 {
-    public static void main( String[] args )
-    {
-        System.out.println( "Hello World! I am Ridoy." );
+    public static void main(String[] args) throws Exception {
+        if (args.length == 0) {
+            System.err.println("Pass path to input JSON");
+            System.exit(1);
+        }
+
+        String input = Files.readString(Paths.get(args[0]));
+        System.out.println(HealthMapper.map(input));
     }
 }

@@ -1,10 +1,25 @@
-{
-  fullName: payload.firstName + " " + payload.lastName,
-  dateOfBirth: payload.dob,
-  visitSummaries: std.map(function(v) {
-    date: v.date,
-    bmi: std.round(v.weightKg / ((v.heightCm / 100) ^ 2)),
-    bp: v.bloodPressure,
-    diagnosis: v.diagnosis
-  }, payload.visits)
-}
+std.map(
+  function(patient)
+    local attributes = patient.attributes;
+    local firstName = attributes[0].value;
+    local surname = attributes[1].value;
+    local sex = attributes[2].value;
+    local dob = attributes[3].value;
+
+    {
+      resourceType: "Patient",
+      id: patient.trackedEntityInstance,
+      identifier: [{
+        system: "https://dhis2.example.org/trackedEntityInstances",
+        value: patient.trackedEntityInstance
+      }],
+      name: [{
+        text: firstName + " " + surname,
+        family: surname,
+        given: [firstName]
+      }],
+      gender: sex,
+      birthDate: dob
+    },
+  payload
+)

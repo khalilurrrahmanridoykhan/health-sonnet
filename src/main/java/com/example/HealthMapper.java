@@ -17,13 +17,4 @@ public class HealthMapper {
                 new DefaultDocument<>(inputJson, MediaTypes.APPLICATION_JSON)).getContent();
     }
 
-    // Demo main – you can run `mvn exec:java` later
-    public static void main(String[] args) throws Exception {
-        if (args.length == 0) {
-            System.err.println("Pass path to input JSON");
-            System.exit(1);
-        }
-        String input = Files.readString(Paths.get(args[0]));
-        System.out.println(map(input));
-    }
 }
