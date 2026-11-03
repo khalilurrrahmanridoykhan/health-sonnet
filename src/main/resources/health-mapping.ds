@@ -1,8 +1,12 @@
-local attributeValue(attributes, uid) = 
-  std.filter(
-    function(attribute) attribute.attribute == uid, attributes
-  )[0].value;
-
+local attributeValue(attributes, uid) =
+  local matches = std.filter(
+    function(attribute) attribute.attribute == uid,
+    attributes
+  );
+  if std.length(matches) > 0 then
+    matches[0].value
+  else
+    null;
 
 std.map(
   function(patient)
@@ -13,13 +17,17 @@ std.map(
     local dob = attributeValue(attributes, "dobUID");
 
     local genderMap = {
-      M: "male", 
+      M: "male",
       F: "female",
       O: "other"
     };
-    local gender = if std.objectHas(genderMap, dhisSex) then genderMap[dhisSex] else "unknown";
 
-    {
+    local gender =
+      if dhisSex != null && std.objectHas(genderMap, dhisSex)
+      then genderMap[dhisSex]
+      else "unknown";
+
+    std.prune({
       resourceType: "Patient",
       id: patient.trackedEntityInstance,
       identifier: [{
@@ -33,6 +41,6 @@ std.map(
       }],
       gender: gender,
       birthDate: dob
-    },
+    }),
   payload
 )

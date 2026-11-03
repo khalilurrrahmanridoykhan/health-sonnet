@@ -42,5 +42,23 @@
         "value": "2003-01-03"
       }
     ]
+  }, 
+  {
+    "trackedEntityInstance": "TEI-003",
+    "orgUnit": "OU-003",
+    "attributes": [
+      {
+        "attribute": "firstNameUID",
+        "value": "John"
+      },
+      {
+        "attribute": "surnameUID",
+        "value": "Doe"
+      },
+      {
+        "attribute": "sexUID",
+        "value": "M"
+      }
+    ]
   }
 ]
