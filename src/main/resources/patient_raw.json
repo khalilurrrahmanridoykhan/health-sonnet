@@ -1,64 +1,85 @@
-[
-  {
-    "trackedEntityInstance": "TEI-001",
-    "orgUnit": "OU-001",
-    "attributes": [
-      {
-        "attribute": "firstNameUID",
-        "value": "Ahmed"
-      },
-      {
-        "attribute": "surnameUID",
-        "value": "Hussein"
-      },
-      {
-        "attribute": "sexUID",
-        "value": "M"
-      },
-      {
-        "attribute": "dobUID",
-        "value": "1985-04-12"
-      }
-    ]
-  },
-  {
-    "trackedEntityInstance": "TEI-002",
-    "orgUnit": "OU-002",
-    "attributes": [
-      {
-        "attribute": "firstNameUID",
-        "value": "Khalilur Rahman"
-      },
-      {
-        "attribute": "surnameUID",
-        "value": "Ridoy Khan"
-      },
-      {
-        "attribute": "sexUID",
-        "value": "M"
-      },
-      {
-        "attribute": "dobUID",
-        "value": "2003-01-03"
-      }
-    ]
-  }, 
-  {
-    "trackedEntityInstance": "TEI-003",
-    "orgUnit": "OU-003",
-    "attributes": [
-      {
-        "attribute": "firstNameUID",
-        "value": "John"
-      },
-      {
-        "attribute": "surnameUID",
-        "value": "Doe"
-      },
-      {
-        "attribute": "sexUID",
-        "value": "M"
-      }
-    ]
-  }
-]
+{
+  "trackedEntities": [
+    {
+      "trackedEntityInstance": "TEI-001",
+      "orgUnit": "OU-001",
+      "attributes": [
+        {
+          "attribute": "firstNameUID",
+          "value": "Ahmed"
+        },
+        {
+          "attribute": "surnameUID",
+          "value": "Hussein"
+        },
+        {
+          "attribute": "sexUID",
+          "value": "M"
+        },
+        {
+          "attribute": "dobUID",
+          "value": "1985-04-12"
+        }
+      ]
+    },
+    {
+      "trackedEntityInstance": "TEI-002",
+      "orgUnit": "OU-002",
+      "attributes": [
+        {
+          "attribute": "firstNameUID",
+          "value": "Khalilur Rahman"
+        },
+        {
+          "attribute": "surnameUID",
+          "value": "Ridoy Khan"
+        },
+        {
+          "attribute": "sexUID",
+          "value": "M"
+        },
+        {
+          "attribute": "dobUID",
+          "value": "2003-01-03"
+        }
+      ]
+    },
+    {
+      "trackedEntityInstance": "TEI-003",
+      "orgUnit": "OU-003",
+      "attributes": [
+        {
+          "attribute": "firstNameUID",
+          "value": "John"
+        },
+        {
+          "attribute": "surnameUID",
+          "value": "Doe"
+        },
+        {
+          "attribute": "sexUID",
+          "value": "M"
+        }
+      ]
+    }
+  ],
+  "events": [
+    {
+      "event": "EVT-001",
+      "trackedEntityInstance": "TEI-001",
+      "programStage": "PS-001",
+      "orgUnit": "OU-001",
+      "eventDate": "2023-10-01",
+      "dataValues": [
+        {
+          "dataElement": "DE-001",
+          "value": "120/80"
+        },
+        {
+          "dataElement": "DE-002",
+          "value": "72"
+        }
+      ]
+    }
+  ]
+}

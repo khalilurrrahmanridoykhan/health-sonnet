@@ -8,6 +8,16 @@ local attributeValue(attributes, uid) =
   else
     null;
 
+local dataValue(dataValues, uid) =
+  local matches = std.filter(
+    function(dataValue) dataValue.dataElement == uid,
+    dataValues
+  );
+  if std.length(matches) > 0 then
+    matches[0].value
+  else
+    null;
+
 local patients = std.map(
   function(patient)
     local attributes = patient.attributes;
@@ -42,19 +52,77 @@ local patients = std.map(
       gender: gender,
       birthDate: dob
     }),
-  payload
+  payload.trackedEntities
 );
 
+local observations = std.map(
+  function(event)
+    local systolic = dataValue(event.dataValues, "systolicUID");
+    local diastolic = dataValue(event.dataValues, "diastolicUID");
+
+    {
+      resourceType: "Observation",
+      id: event.event,
+      status: "final",
+      code: {
+        coding: [{
+          system: "http://loinc.org",
+          code: "85354-9",
+          display: "Blood pressure panel with all children optional"
+        }],
+        text: "Blood pressure"
+      },
+      subject: {
+        reference: "Patient/" + event.trackedEntityInstance
+      },
+      effectiveDateTime: event.eventDate,
+      component: [
+        std.prune({
+          code: {
+            coding: [{
+              system: "http://loinc.org",
+              code: "8480-6",
+              display: "Systolic blood pressure"
+            }]
+          },
+          valueQuantity: if systolic != null then {
+            value: std.parseInt(systolic),
+            unit: "mmHg",
+            system: "http://unitsofmeasure.org",
+            code: "mm[Hg]"
+          } else null
+        }),
+        std.prune({
+          code: {
+            coding: [{
+              system: "http://loinc.org",
+              code: "8462-4",
+              display: "Diastolic blood pressure"
+            }]
+          },
+          valueQuantity: if diastolic != null then {
+            value: std.parseInt(diastolic),
+            unit: "mmHg",
+            system: "http://unitsofmeasure.org",
+            code: "mm[Hg]"
+          } else null
+        })
+      ]
+    },
+  payload.events
+);
+
+local resources = patients + observations;
 
 {
-  resourceType: "Bundle", 
-  type: "collection", 
-  total: std.length(patients),
+  resourceType: "Bundle",
+  type: "collection",
+  total: std.length(resources),
   entry: std.map(
-    function(patient){
-      fullUrl: "urn:uuid:" + patient.id,
-      resource: patient
-    }, 
-    patients
+    function(resource) {
+      fullUrl: "urn:uuid:" + resource.id,
+      resource: resource
+    },
+    resources
   )
 }
