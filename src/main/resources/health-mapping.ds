@@ -9,8 +9,15 @@ std.map(
     local attributes = patient.attributes;
     local firstName = attributeValue(attributes, "firstNameUID");
     local surname = attributeValue(attributes, "surnameUID");
-    local sex = attributeValue(attributes, "sexUID");
+    local dhisSex = attributeValue(attributes, "sexUID");
     local dob = attributeValue(attributes, "dobUID");
+
+    local genderMap = {
+      M: "male", 
+      F: "female",
+      O: "other"
+    };
+    local gender = if std.objectHas(genderMap, dhisSex) then genderMap[dhisSex] else "unknown";
 
     {
       resourceType: "Patient",
@@ -24,7 +31,7 @@ std.map(
         family: surname,
         given: [firstName]
       }],
-      gender: sex,
+      gender: gender,
       birthDate: dob
     },
   payload
