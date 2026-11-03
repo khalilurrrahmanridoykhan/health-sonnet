@@ -49,8 +49,10 @@ local patients = std.map(
 {
   resourceType: "Bundle", 
   type: "collection", 
+  total: std.length(patients),
   entry: std.map(
     function(patient){
+      fullUrl: "urn:uuid:" + patient.id,
       resource: patient
     }, 
     patients
