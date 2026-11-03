@@ -176,10 +176,10 @@ local resources =
 {
   resourceType: "Bundle",
   type: "collection",
-  total: std.length(resources),
   entry: std.map(
     function(resource) {
-      fullUrl: "urn:uuid:" + resource.id,
+      fullUrl: "https://health-sonnet.example.org/fhir/" +
+               resource.resourceType + "/" + resource.id,
       resource: resource
     },
     resources

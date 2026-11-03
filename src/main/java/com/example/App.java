@@ -12,6 +12,9 @@ public class App
         }
 
         String input = Files.readString(Paths.get(args[0]));
-        System.out.println(HealthMapper.map(input));
+        String bundleJson = HealthMapper.map(input);
+
+        System.out.println(bundleJson);
+        FhirBundleValidator.validate(bundleJson);
     }
 }
