@@ -1,10 +1,16 @@
+local attributeValue(attributes, uid) = 
+  std.filter(
+    function(attribute) attribute.attribute == uid, attributes
+  )[0].value;
+
+
 std.map(
   function(patient)
     local attributes = patient.attributes;
-    local firstName = attributes[0].value;
-    local surname = attributes[1].value;
-    local sex = attributes[2].value;
-    local dob = attributes[3].value;
+    local firstName = attributeValue(attributes, "firstNameUID");
+    local surname = attributeValue(attributes, "surnameUID");
+    local sex = attributeValue(attributes, "sexUID");
+    local dob = attributeValue(attributes, "dobUID");
 
     {
       resourceType: "Patient",
