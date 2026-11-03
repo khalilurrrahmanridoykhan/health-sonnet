@@ -45,7 +45,7 @@
                 <artifactId>exec-maven-plugin</artifactId>
                 <version>3.3.0</version>
                 <configuration>
-                    <mainClass>com.example.HealthMapper</mainClass>
+                    <mainClass>com.example.App</mainClass>
                     <arguments>
                         <argument>${project.basedir}/src/main/resources/patient_raw.json</argument>
                     </arguments>
