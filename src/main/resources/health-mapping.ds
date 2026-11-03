@@ -8,7 +8,7 @@ local attributeValue(attributes, uid) =
   else
     null;
 
-std.map(
+local patients = std.map(
   function(patient)
     local attributes = patient.attributes;
     local firstName = attributeValue(attributes, "firstNameUID");
@@ -43,4 +43,16 @@ std.map(
       birthDate: dob
     }),
   payload
-)
+);
+
+
+{
+  resourceType: "Bundle", 
+  type: "collection", 
+  entry: std.map(
+    function(patient){
+      resource: patient
+    }, 
+    patients
+  )
+}
