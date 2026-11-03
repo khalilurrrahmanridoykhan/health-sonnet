@@ -15,6 +15,8 @@ public class App
         String bundleJson = HealthMapper.map(input);
 
         System.out.println(bundleJson);
-        FhirBundleValidator.validate(bundleJson);
+        if (!FhirBundleValidator.validate(bundleJson)) {
+            System.exit(1);
+        }
     }
 }
