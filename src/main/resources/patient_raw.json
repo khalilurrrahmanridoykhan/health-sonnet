@@ -72,11 +72,15 @@
       "eventDate": "2023-10-01",
       "dataValues": [
         {
-          "dataElement": "DE-001",
-          "value": "120/80"
+          "dataElement": "systolicUID",
+          "value": "120"
         },
         {
-          "dataElement": "DE-002",
+          "dataElement": "diastolicUID",
+          "value": "80"
+        },
+        {
+          "dataElement": "heartRateUID",
           "value": "72"
         }
       ]

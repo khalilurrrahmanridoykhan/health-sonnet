@@ -55,14 +55,14 @@ local patients = std.map(
   payload.trackedEntities
 );
 
-local observations = std.map(
+local bloodPressureObservations = std.map(
   function(event)
     local systolic = dataValue(event.dataValues, "systolicUID");
     local diastolic = dataValue(event.dataValues, "diastolicUID");
 
     {
       resourceType: "Observation",
-      id: event.event,
+      id: event.event + "-blood-pressure",
       status: "final",
       code: {
         coding: [{
@@ -112,7 +112,43 @@ local observations = std.map(
   payload.events
 );
 
-local resources = patients + observations;
+local heartRateObservations = std.map(
+  function(event)
+    local heartRate = dataValue(event.dataValues, "heartRateUID");
+
+    if heartRate != null then {
+      resourceType: "Observation",
+      id: event.event + "-heart-rate",
+      status: "final",
+      code: {
+        coding: [{
+          system: "http://loinc.org",
+          code: "8867-4",
+          display: "Heart rate"
+        }],
+        text: "Heart rate"
+      },
+      subject: {
+        reference: "Patient/" + event.trackedEntityInstance
+      },
+      effectiveDateTime: event.eventDate,
+      valueQuantity: {
+        value: std.parseInt(heartRate),
+        unit: "beats/min",
+        system: "http://unitsofmeasure.org",
+        code: "/min"
+      }
+    } else null,
+  payload.events
+);
+
+local validHeartRateObservations = std.filter(
+  function(observation) observation != null,
+  heartRateObservations
+);
+
+local resources =
+  patients + bloodPressureObservations + validHeartRateObservations;
 
 {
   resourceType: "Bundle",
