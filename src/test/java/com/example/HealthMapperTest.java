@@ -142,6 +142,48 @@ class HealthMapperTest {
         );
     }
 
+    @Test
+    void mapsUnknownSexToUnknownGender() throws Exception {
+        JsonNode input = readSampleInput();
+        JsonNode sex = findAttribute(
+                input.path("trackedEntities").get(0),
+                "sexUID"
+        );
+        ((com.fasterxml.jackson.databind.node.ObjectNode) sex)
+                .put("value", "X");
+
+        JsonNode bundle = map(objectMapper.writeValueAsString(input));
+        JsonNode patient = findResource(
+                bundleResources(bundle),
+                "Patient",
+                "TEI-001"
+        );
+
+        assertEquals("unknown", patient.path("gender").asText());
+    }
+
+    @Test
+    void allClinicalResourcesReferenceExistingPatients() throws Exception {
+        JsonNode bundle = mapSampleBundle();
+        List<JsonNode> resources = bundleResources(bundle);
+        List<String> patientIds = findResources(resources, "Patient").stream()
+                .map(resource -> resource.path("id").asText())
+                .toList();
+
+        findResources(resources, "Encounter").forEach(resource ->
+                assertTrue(patientIds.contains(
+                        resource.path("subject").path("reference").asText()
+                                .replace("Patient/", "")
+                ))
+        );
+        findResources(resources, "Observation").forEach(resource ->
+                assertTrue(patientIds.contains(
+                        resource.path("subject").path("reference").asText()
+                                .replace("Patient/", "")
+                ))
+        );
+    }
+
     private JsonNode readSampleInput() throws Exception {
         return objectMapper.readTree(Files.readString(
                 Path.of("src/main/resources/patient_raw.json")
@@ -238,5 +280,14 @@ class HealthMapperTest {
                         .put("value", value);
             }
         });
+    }
+
+    private JsonNode findAttribute(JsonNode patient, String uid) {
+        for (JsonNode attribute : patient.path("attributes")) {
+            if (uid.equals(attribute.path("attribute").asText())) {
+                return attribute;
+            }
+        }
+        throw new AssertionError("Attribute not found: " + uid);
     }
 }
