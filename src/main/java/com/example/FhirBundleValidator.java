@@ -14,9 +14,30 @@ import org.hl7.fhir.common.hapi.validation.support.SnapshotGeneratingValidationS
 import org.hl7.fhir.common.hapi.validation.support.ValidationSupportChain;
 import org.hl7.fhir.r4.model.Bundle;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class FhirBundleValidator {
 
     public static boolean validate(String bundleJson) {
+        ValidationReport report = validateWithReport(bundleJson);
+
+        System.out.println("FHIR validation: " +
+                (report.successful() ? "SUCCESS" : "FAILED"));
+
+        for (ValidationReport.ValidationIssue issue : report.issues()) {
+            System.out.printf(
+                    "%s: %s - %s%n",
+                    issue.location(),
+                    issue.severity(),
+                    issue.message()
+            );
+        }
+
+        return report.successful();
+    }
+
+    public static ValidationReport validateWithReport(String bundleJson) {
         FhirContext fhirContext = FhirContext.forR4();
         ValidationSupportChain validationSupport = new ValidationSupportChain(
                 new DefaultProfileValidationSupport(fhirContext),
@@ -34,31 +55,32 @@ public class FhirBundleValidator {
             bundle = (Bundle) fhirContext.newJsonParser()
                     .parseResource(bundleJson);
         } catch (DataFormatException exception) {
-            System.out.println("FHIR validation: FAILED");
-            System.out.printf(
-                    "FHIR parsing error: %s%n",
-                    exception.getMessage()
-            );
-            return false;
+            return ValidationReport.failure(List.of(
+                    new ValidationReport.ValidationIssue(
+                            "FATAL",
+                            "Bundle",
+                            exception.getMessage()
+                    )
+            ));
         }
 
         ValidationResult result =
                 validator.validateWithResult(bundle);
 
-        System.out.println("FHIR validation: " +
-                (result.isSuccessful() ? "SUCCESS" : "FAILED"));
-
+        List<ValidationReport.ValidationIssue> issues = new ArrayList<>();
         for (SingleValidationMessage message : result.getMessages()) {
             if (message.getSeverity() == ResultSeverityEnum.ERROR
                     || message.getSeverity() == ResultSeverityEnum.FATAL) {
-                System.out.printf(
-                        "%s: %s%n",
+                issues.add(new ValidationReport.ValidationIssue(
+                        message.getSeverity().name(),
                         message.getLocationString(),
                         message.getMessage()
-                );
+                ));
             }
         }
 
-        return result.isSuccessful();
+        return result.isSuccessful()
+                ? ValidationReport.success()
+                : ValidationReport.failure(issues);
     }
 }
