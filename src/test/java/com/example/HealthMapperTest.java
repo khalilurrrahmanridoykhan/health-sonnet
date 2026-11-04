@@ -116,6 +116,32 @@ class HealthMapperTest {
                 .count());
     }
 
+    @Test
+    void ignoresInvalidVitalSignNumbers() throws Exception {
+        JsonNode input = readSampleInput();
+        JsonNode event = input.path("events").get(0);
+        setDataValue(event, "systolicUID", "not-a-number");
+        setDataValue(event, "heartRateUID", "invalid-heart-rate");
+
+        JsonNode bundle = map(objectMapper.writeValueAsString(input));
+        List<JsonNode> resources = bundleResources(bundle);
+
+        JsonNode bloodPressure = findResource(
+                resources,
+                "Observation",
+                "EVT-001-blood-pressure"
+        );
+        assertEquals(1, bloodPressure.path("component").size());
+
+        assertEquals(
+                0,
+                findResources(resources, "Observation").stream()
+                        .filter(resource -> "EVT-001-heart-rate"
+                                .equals(resource.path("id").asText()))
+                        .count()
+        );
+    }
+
     private JsonNode readSampleInput() throws Exception {
         return objectMapper.readTree(Files.readString(
                 Path.of("src/main/resources/patient_raw.json")
@@ -197,5 +223,20 @@ class HealthMapperTest {
         });
         dataValues.removeAll();
         remaining.forEach(dataValues::add);
+    }
+
+    private void setDataValue(
+            JsonNode event,
+            String dataElementUid,
+            String value
+    ) {
+        event.path("dataValues").forEach(dataValue -> {
+            if (dataElementUid.equals(
+                    dataValue.path("dataElement").asText()
+            )) {
+                ((com.fasterxml.jackson.databind.node.ObjectNode) dataValue)
+                        .put("value", value);
+            }
+        });
     }
 }

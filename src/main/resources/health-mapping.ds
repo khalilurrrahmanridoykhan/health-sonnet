@@ -60,7 +60,7 @@ local bloodPressureObservations = std.map(
     local systolic = dataValue(event.dataValues, "systolicUID");
     local diastolic = dataValue(event.dataValues, "diastolicUID");
 
-    {
+    if systolic != null || diastolic != null then {
       resourceType: "Observation",
       id: event.event + "-blood-pressure",
       status: "final",
@@ -76,8 +76,10 @@ local bloodPressureObservations = std.map(
         reference: "Patient/" + event.trackedEntityInstance
       },
       effectiveDateTime: event.eventDate,
-      component: [
-        std.prune({
+      component: std.filter(
+        function(component) component != null,
+        [
+        if systolic != null then {
           code: {
             coding: [{
               system: "http://loinc.org",
@@ -90,9 +92,9 @@ local bloodPressureObservations = std.map(
             unit: "mmHg",
             system: "http://unitsofmeasure.org",
             code: "mm[Hg]"
-          } else null
-        }),
-        std.prune({
+          }
+        } else null,
+        if diastolic != null then {
           code: {
             coding: [{
               system: "http://loinc.org",
@@ -105,10 +107,11 @@ local bloodPressureObservations = std.map(
             unit: "mmHg",
             system: "http://unitsofmeasure.org",
             code: "mm[Hg]"
-          } else null
-        })
-      ]
-    },
+          }
+        } else null
+        ]
+      )
+    } else null,
   payload.events
 );
 
@@ -142,6 +145,11 @@ local heartRateObservations = std.map(
   payload.events
 );
 
+local validBloodPressureObservations = std.filter(
+  function(observation) observation != null,
+  bloodPressureObservations
+);
+
 local validHeartRateObservations = std.filter(
   function(observation) observation != null,
   heartRateObservations
@@ -170,7 +178,7 @@ local encounters = std.map(
 local resources =
   patients +
   encounters +
-  bloodPressureObservations +
+  validBloodPressureObservations +
   validHeartRateObservations;
 
 {
