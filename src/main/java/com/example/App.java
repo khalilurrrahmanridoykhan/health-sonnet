@@ -12,7 +12,8 @@ public class App
         }
 
         String input = Files.readString(Paths.get(args[0]));
-        String bundleJson = HealthMapper.map(input);
+        BatchResult batchResult = BatchProcessor.process(input);
+        String bundleJson = batchResult.bundleJson();
 
         System.out.println(bundleJson);
         if (!FhirBundleValidator.validate(bundleJson)) {
