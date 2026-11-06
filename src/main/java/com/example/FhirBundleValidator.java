@@ -19,6 +19,25 @@ import java.util.List;
 
 public class FhirBundleValidator {
 
+    // Built once and reused: constructing this chain scans hundreds of FHIR
+    // model classes and is far too memory/CPU heavy to redo on every request,
+    // especially on a memory-constrained host.
+    private static final FhirContext FHIR_CONTEXT = FhirContext.forR4();
+    private static final FhirValidator VALIDATOR = buildValidator();
+
+    private static FhirValidator buildValidator() {
+        ValidationSupportChain validationSupport = new ValidationSupportChain(
+                new DefaultProfileValidationSupport(FHIR_CONTEXT),
+                new CommonCodeSystemsTerminologyService(FHIR_CONTEXT),
+                new InMemoryTerminologyServerValidationSupport(FHIR_CONTEXT),
+                new SnapshotGeneratingValidationSupport(FHIR_CONTEXT)
+        );
+        FhirInstanceValidator instanceValidator = new FhirInstanceValidator(validationSupport);
+        FhirValidator validator = FHIR_CONTEXT.newValidator();
+        validator.registerValidatorModule(instanceValidator);
+        return validator;
+    }
+
     public static boolean validate(String bundleJson) {
         ValidationReport report = validateWithReport(bundleJson);
 
@@ -38,21 +57,9 @@ public class FhirBundleValidator {
     }
 
     public static ValidationReport validateWithReport(String bundleJson) {
-        FhirContext fhirContext = FhirContext.forR4();
-        ValidationSupportChain validationSupport = new ValidationSupportChain(
-                new DefaultProfileValidationSupport(fhirContext),
-                new CommonCodeSystemsTerminologyService(fhirContext),
-                new InMemoryTerminologyServerValidationSupport(fhirContext),
-                new SnapshotGeneratingValidationSupport(fhirContext)
-        );
-        FhirInstanceValidator instanceValidator =
-                new FhirInstanceValidator(validationSupport);
-        FhirValidator validator = fhirContext.newValidator();
-        validator.registerValidatorModule(instanceValidator);
-
         Bundle bundle;
         try {
-            bundle = (Bundle) fhirContext.newJsonParser()
+            bundle = (Bundle) FHIR_CONTEXT.newJsonParser()
                     .parseResource(bundleJson);
         } catch (DataFormatException exception) {
             return ValidationReport.failure(List.of(
@@ -65,7 +72,7 @@ public class FhirBundleValidator {
         }
 
         ValidationResult result =
-                validator.validateWithResult(bundle);
+                VALIDATOR.validateWithResult(bundle);
 
         List<ValidationReport.ValidationIssue> issues = new ArrayList<>();
         for (SingleValidationMessage message : result.getMessages()) {
