@@ -12,6 +12,7 @@
   #status { padding: 8px 24px; font-weight: bold; }
   .ok { color: #4ade80; }
   .fail { color: #f87171; }
+  .skipped { color: #94a3b8; }
   main { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: #334155; }
   section { background: #0f172a; padding: 16px; overflow: auto; max-height: 75vh; }
   h2 { margin-top: 0; font-size: 14px; text-transform: uppercase; color: #94a3b8; }
@@ -76,9 +77,14 @@ fetchBtn.addEventListener('click', async () => {
     dhis2Panel.textContent = JSON.stringify(body.dhis2Raw, null, 2);
     fhirPanel.textContent = JSON.stringify(body.bundle, null, 2);
 
-    const valid = body.validation && body.validation.successful;
-    statusEl.textContent = 'FHIR validation: ' + (valid ? 'SUCCESS' : 'FAILED');
-    statusEl.className = valid ? 'ok' : 'fail';
+    if (body.validationSkipped) {
+      statusEl.textContent = 'FHIR validation: SKIPPED (disabled on this host to save memory)';
+      statusEl.className = 'skipped';
+    } else {
+      const valid = body.validation && body.validation.successful;
+      statusEl.textContent = 'FHIR validation: ' + (valid ? 'SUCCESS' : 'FAILED');
+      statusEl.className = valid ? 'ok' : 'fail';
+    }
 
     if (body.warnings && body.warnings.length) {
       warningsEl.textContent = 'Warnings: ' + body.warnings.join(' | ');
