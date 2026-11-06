@@ -29,7 +29,9 @@ local patients = std.map(
     local genderMap = {
       M: "male",
       F: "female",
-      O: "other"
+      O: "other",
+      Male: "male",
+      Female: "female"
     };
 
     local gender =
