@@ -53,7 +53,7 @@ public class Dhis2Client {
                         + "&orgUnit=" + orgUnit
                         + "&fields=trackedEntity,orgUnit,attributes[attribute,value],"
                         + "enrollments[events[event,programStage,orgUnit,occurredAt,dataValues[dataElement,value]]]"
-                        + "&pageSize=50"
+                        + "&pageSize=15"
         ).path("trackedEntities");
 
         ObjectNode normalized = objectMapper.createObjectNode();
