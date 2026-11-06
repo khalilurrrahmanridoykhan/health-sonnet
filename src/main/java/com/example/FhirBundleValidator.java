@@ -38,6 +38,10 @@ public class FhirBundleValidator {
         return validator;
     }
 
+    /** Forces the static initializer above to run now instead of on the first real request. */
+    public static void warmUp() {
+    }
+
     public static boolean validate(String bundleJson) {
         ValidationReport report = validateWithReport(bundleJson);
 
