@@ -54,7 +54,7 @@
         <dependency>
             <groupId>ca.uhn.hapi.fhir</groupId>
             <artifactId>hapi-fhir-validation</artifactId>
-            <version>8.2.0</version>
+            <version>8.12.1</version>
             <exclusions>
                 <exclusion>
                     <groupId>org.ogce</groupId>
